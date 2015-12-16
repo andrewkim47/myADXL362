@@ -1,24 +1,24 @@
-/*
- Arduino Library for Analog Devices ADXL362 - Micropower 3-axis accelerometer
- go to http://www.analog.com/ADXL362 for datasheet
- 
- 
- License: CC BY-SA 3.0: Creative Commons Share-alike 3.0. Feel free 
- to use and abuse this code however you'd like. If you find it useful
- please attribute, and SHARE-ALIKE!
- 
- Created June 2012
- by Anne Mahaffey - hosted on http://annem.github.com/ADXL362
- 
- Modified May 2013
- by Jonathan Ruiz de Garibay
-
- */ 
 
 #include "Arduino.h"
 
 #ifndef ADXL362_h
 #define ADXL362_h
+
+#define FILTER_CTL 0x2C
+
+#define RANGE 6
+#define ODR 0
+
+#define ADXL362_2G 0
+#define ADXL362_4G 1
+#define ADXL362_8G 2
+
+#define ADXL362_RATE_12_5 0 // 12.5 Hz
+#define ADXL362_RATE_25   1 // 25 Hz
+#define ADXL362_RATE_50   2 // 50 Hz
+#define ADXL362_RATE_100  3 // 100 Hz (reset default)
+#define ADXL362_RATE_200  4 // 200 Hz
+#define ADXL362_RATE_400  7 // 400 Hz
 
 class ADXL362
 {
@@ -36,6 +36,8 @@ public:
 	int16_t readZData();
 	void readXYZTData(int16_t &XData, int16_t &YData, int16_t &ZData, int16_t &Temperature);
 	int16_t readTemp();
+	void setRange(int sense);
+	void setODR(int rate);
 	
 	//
 	// Activity/Inactivity interrupt functions
@@ -45,27 +47,23 @@ public:
     void setupACActivityInterrupt(int16_t threshold, byte time);
 	void setupACInactivityInterrupt(int16_t threshold, int16_t time);
 	
-	// need to add the following functions
-	// void mapINT1(
+	// TODO: 
+	// void mapINT1
 	// void mapINT2
 	// void autoSleep
 	// void activityInterruptControl
-	//		-Activity, Inactivity, Both
+	//		- Activity, Inactivity, Both
 	//		- Referenced, Absolute
 	//		- Free Fall, Linked Mode, Loop Mode
 	
 	void checkAllControlRegs();
-	
 
-	
+private:
 	//  Low-level SPI control, to simplify overall coding
 	byte SPIreadOneRegister(byte regAddress);
 	void SPIwriteOneRegister(byte regAddress, byte regValue);
 	int16_t  SPIreadTwoRegisters(byte regAddress);
 	void SPIwriteTwoRegisters(byte regAddress, int16_t twoRegValue);
-
-private:
-
 	
 };
 
